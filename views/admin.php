@@ -11,6 +11,7 @@
 				echo "This is a restricted access page.";
 			else
 				echo "Welcome to Admin club";
+				print_r($_SESSION);
 		?>
 	</body>
 </html>

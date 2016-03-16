@@ -32,8 +32,13 @@ $login = new Login();
 
 // ... ask if we are logged in here:
 if ($login->isUserLoggedIn() == true) {
-    // the user is logged in. you can do whatever you want here.
-    // for demonstration purposes, we simply show the "you are logged in" view.
+    // the user is logged in. 
+    // The administrator view
+    if ($login-> isUserAdmin() == true) {
+        header("Location:admin/");
+        exit;
+    }
+    // The normal user view
     include("views/logged_in.php");
    
 
