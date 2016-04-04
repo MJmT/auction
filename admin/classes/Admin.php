@@ -28,29 +28,19 @@ class Admin  {
     }
      public function clickAction($action) {
         if(isset($_GET[$action])) {
-                if(strcmp($action,"user_accounts")==0) {
-                    return "user_accounts";
-                }
-                else if(strcmp($action,"products")==0) {
-                    return "products";
-                }
-                else if(strcmp($action,"user_accounts")==0) {
-                    return "user_accounts";
-                }
-                else if(strcmp($action,"categories")==0) {
-                    return "categories";
-                }
-                else if(strcmp($action,"static_pages")==0) {
-                    return "static_pages";
-                }
-                else if(strcmp($action,"customer_query")==0) {
-                    return "customer_query";
-                }
-                
-                
+            $admin_action= array("user_accounts","products","categories","static_pages","customer_query");
+            $arrlength = count($admin_action);
+            for($i=0;$i<=$arrlength;$i++) {
+                    if(strcmp($action,$admin_action[$i])==0) {
+                            return $action;
+                    }
+                    
+            }
         }
+
+       
         else if(empty($_GET)) {
-            return "home";
+            return "admin_panel";
         }
     }
     

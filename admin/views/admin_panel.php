@@ -13,7 +13,7 @@
 			echo '<ul>';
 			foreach($tasks as $key => $val) {
 						
-				echo '<li><a href="index.php?'.$key.'">'.$val.'</a></li>';
+				echo '<li><a href="'.$key.'">'.$val.'</a></li>';
 					
 				}
 			echo '</ul>';

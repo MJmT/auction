@@ -1,0 +1,4 @@
+RewriteEngine On    # Turn on the rewriting engine
+RewriteRule    ^about-us/?$    static_pages/about.php    [NC,L] 
+RewriteRule    ^contact-us/?$    static_pages/contact.php    [NC,L] 
+RewriteRule    ^admin/([a-zA-Z_]+)$   admin/index.php?$1    [L] 
