@@ -30,8 +30,12 @@ require_once("classes/Admin.php");
 	//
 	if ($admin->clickAction("user_accounts") == "user_accounts")
 			include('views/user_accounts.php');
-	else if($admin->clickAction("products") == "products")
+	else if($admin->clickAction("products") == "products") {
 			include('views/products.php');
+		
+
+	
+		}
 	else 
 		include('views/admin_panel.php');
 	
