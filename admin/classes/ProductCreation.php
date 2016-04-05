@@ -52,7 +52,13 @@
             		$this->errors[] = "Product title cannot be shorter than 10 or longer than 100 characters";
         	}	else if (!preg_match('/^[0-9]+(\.[0-9][0-9]?)?$/i', $this->product_price)) { 
         			$this->errors[] = "Price has to be a float with atmost 2 numbers following the dot.";
-        	}	elseif (!empty($this->product_name)
+
+        	}	/*else if(!preg_match('/^image\/p?jpeg$/i', $_FILES['product_image']['type']) OR  
+				!preg_match('/^image\/gif$/i', $_FILES['product_image']['type']) OR
+				!preg_match('/^image\/(x-)?png$/i', $_FILES['product_image']['type'])) {
+        			$this->errors[] = "Invalid File type. PNG/JPG/GIF are only supported.";*/
+         	}
+        		elseif (!empty($this->product_name)
         		&& strlen($this->product_name) <= 64
             	&& strlen($this->product_name) >= 2
             	//&& preg_match('/^[a-zA-Z\d]{2.64}$/i',($_POST['product_name'])) 
