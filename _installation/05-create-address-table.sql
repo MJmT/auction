@@ -3,7 +3,8 @@ CREATE TABLE IF NOT EXISTS `login`.`address` (
   `user_id` int(11) NOT NULL,
    `Address1` varchar(120) COLLATE utf8_unicode_ci NOT NULL,
    `Address2` varchar(120) COLLATE utf8_unicode_ci,
-    `user_privilege` int(5) NOT NULL DEFAULT 0,
+   `Address3` varchar(120) COLLATE utf8_unicode_ci,
+    `City` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `user_name` (`user_name`),
   UNIQUE KEY `user_email` (`user_email`)
