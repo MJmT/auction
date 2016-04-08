@@ -1,25 +1,11 @@
 <?php
-	
-	class ProductCreation {
-
-		private $db_connection = null;
-
-		private $product_image_name;
-		private $product_image;
-		private $product_name;
-		private $product_title;
-		private $product_description;
-		private $product_price;
-
-
-		public $errors = array();
-
-		public $messages = array();
+	require_once($_SERVER['DOCUMENT_ROOT'] . '/pro2/classes/AbstractProduct.php');
+	class ProductCreation extends AbstractProductClass {
 
 
 		public function __construct() {
 
-				session_start();
+				AbstractProductClass::__construct();
 
 				if(isset($_POST["create"])) {
 						$this->product_name = $_POST['product_name'];
@@ -57,7 +43,7 @@
 				!preg_match('/^image\/gif$/i', $_FILES['product_image']['type']) OR
 				!preg_match('/^image\/(x-)?png$/i', $_FILES['product_image']['type'])) {
         			$this->errors[] = "Invalid File type. PNG/JPG/GIF are only supported.";*/
-         	}
+         	
         		elseif (!empty($this->product_name)
         		&& strlen($this->product_name) <= 64
             	&& strlen($this->product_name) >= 2

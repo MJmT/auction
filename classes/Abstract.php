@@ -108,6 +108,7 @@ class AbstractLoginClass {
     protected function ChangeEmailId() {
     	if(!strcmp($_SESSION['user_email'], $_POST['user_email'])) {
 						  return true;
+      }
     }
     protected function EmailIdExists() {
     	$user_email = $this->db_connection->real_escape_string(strip_tags($_POST['user_email'], ENT_QUOTES));
