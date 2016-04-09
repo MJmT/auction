@@ -31,32 +31,38 @@ class User extends AbstractLoginClass {
 	 	
 				if($this->setupDbConnection()==true) {
 
-					/*if($this->ChangeEmailId() == true) {
-						 if($this->EmailIdExists() == true) {
+					if($this->ChangeEmailId() == true && $this->EmailIdExists() == true) {
 							$this->errors[] = "The email id is already taken";
-							include('views/profile_setup.php');
-							exit();
+							
 						}
-						}
-						  else */
-						  	$user_email = $this->db_connection->real_escape_string(strip_tags($_POST['user_email'], ENT_QUOTES));
-						}
-						else $user_email = $_SESSION['user_email'];
+						
+					else{
+						 if($this->ChangeEmailId() && !$this->EmailIdExists()) 
+						    $user_email = $this->db_connection->real_escape_string(strip_tags($_POST['user_email'], ENT_QUOTES));
+						else 
+							$user_email = $_SESSION['user_email'];
+					
+						$user_fname = $this->db_connection->real_escape_string(strip_tags($_POST['user_fname'], ENT_QUOTES));
+						$user_lname = $this->db_connection->real_escape_string(strip_tags($_POST['user_lname'], ENT_QUOTES));
+						$user_mobile = (int) $_POST['user_mobile'];
+						$sql = "UPDATE  users 
+								SET user_email='" . $user_email . "', user_fname='" . $user_fname . "', user_lname='" . $user_lname . "' 
+								WHERE user_name = '" . $_SESSION['user_name']. "';";
 
-					$user_fname = $this->db_connection->real_escape_string(strip_tags($_POST['user_fname'], ENT_QUOTES));
-					$user_lname = $this->db_connection->real_escape_string(strip_tags($_POST['user_lname'], ENT_QUOTES));
-					$user_mobile = (int) $_POST['user_mobile'];
-					$sql = "UPDATE  users 
-							SET user_email='" . $user_email . "', user_fname='" . $user_fname . "', user_lname='" . $user_lname . "' 
-							WHERE user_name = '" . $_SESSION['user_name']. "';";
-
-					$result_from_update = $this->db_connection->query($sql);
+						$result_from_update = $this->db_connection->query($sql);
 						if($result_from_update) {
 							$this->messages[] = "Success!";
 						}
 						else 
-							$this->errors[] = "Something Went wrong";
+							$this->errors[] = "Failed to update the database";
 				}
+			}
+			else 
+				$this->errors[] = "The database connection failed";
+			
 		}
+		 else 
+		 	$this->errors[] = "An unknown erorr occured";
+
 	}
-//}
+}

@@ -107,7 +107,7 @@ class AbstractLoginClass {
         	return false;
     }
     protected function ChangeEmailId() {
-    	if(!strcmp($_SESSION['user_email'], $_POST['user_email'])) {
+    	if(strcmp($_SESSION['user_email'], $_POST['user_email']) != 0) {
 						  return true;
       }
     }
@@ -117,12 +117,12 @@ class AbstractLoginClass {
 		$query_check_user_email = $this->db_connection->query($sql);
 		if($query_check_user_email->num_rows ==1) 
 		   return true;
-		else {
+		/*else {
 			$sql = "UPDATE users 
 					SET user_email='" . $user_email . "',  
 					WHERE user_name='" . $_SESSION['user_name'] . "';";
 			  $query_email_update = $this->db_connection->query($sql);
 				
-			}
+			}*/
 	}		
  }
