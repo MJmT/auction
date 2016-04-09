@@ -61,8 +61,9 @@ class AbstractLoginClass {
       protected function MobileNumberCheck() {
       	if (empty($_POST['user_mobile'])) 
             $this->errors[] = "Mobile Number cannot be empty";
-        if(!preg_match('/^[0-9]{10}$/',$_POST['user_mobile'])) 
+        else if(!preg_match('/^\d{10}$/',$_POST['user_mobile']) OR !is_numeric($_POST['user_mobile'])) 
         	$this->errors[] = "Mobile number entered doesn't exist";
+        else return true;
         
       }
  

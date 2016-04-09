@@ -1,5 +1,6 @@
 <?php
 // show potential errors / feedback (from user object)
+
 if (isset($user)) {
     if ($user->errors) {
         foreach ($user->errors as $error) {
@@ -26,10 +27,10 @@ if (isset($user)) {
     <input id="user_input_email" class="user_input" type="email" name="user_email" value="<?php echo $_SESSION['user_email'];?>" required />
     <br><br>
     <label for="user_input_fname">First Name: </label>
-    <input id="user_input_fname" class="user_input" type="text" name="user_fname" pattern="[a-zA-Z ]{2,64}" placeholder= "First Name"  required />
+    <input id="user_input_fname" class="user_input" type="text" name="user_fname"   placeholder= "First Name"  required />
     <br><br>
     <label for="user_input_lname">Last Name: </label>
-    <input id="user_input_lname" class="user_input" type="text" name="user_lname" pattern="[a-zA-Z ]{2,64}" placeholder= "Last Name"  required />
+    <input id="user_input_lname" class="user_input" type="text" name="user_lname"  placeholder= "Last Name"  required />
      <label for="user_input_mobile">Mobile Number: </label>
      <input id="user_input_mobile" class="user_input" type="text" name="user_mobile" pattern="[0-9]*" placeholder= "10 digit mobile number"  required />
     <input type="submit"  name="setup" value="Next" />

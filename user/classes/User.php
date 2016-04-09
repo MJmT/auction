@@ -2,6 +2,7 @@
 <?php
 require_once($_SERVER['DOCUMENT_ROOT'] . '/pro2/classes/Abstract.php');
 class User extends AbstractLoginClass {
+	
 
 	public function __construct() {
 		
@@ -26,18 +27,36 @@ class User extends AbstractLoginClass {
 	}
 	private function SetupFirstSTep() {
 		if( $this->EmailCheck() && $this->NameCheck() && $this->MobileNumberCheck()) {
+					
+	 	
 				if($this->setupDbConnection()==true) {
-					if($this->ChangeEmailId() == true) {
-						 if($this->EmailIdExists() == true) 
+
+					/*if($this->ChangeEmailId() == true) {
+						 if($this->EmailIdExists() == true) {
 							$this->errors[] = "The email id is already taken";
-						  else 
+							include('views/profile_setup.php');
+							exit();
+						}
+						}
+						  else */
 						  	$user_email = $this->db_connection->real_escape_string(strip_tags($_POST['user_email'], ENT_QUOTES));
 						}
+						else $user_email = $_SESSION['user_email'];
 
 					$user_fname = $this->db_connection->real_escape_string(strip_tags($_POST['user_fname'], ENT_QUOTES));
 					$user_lname = $this->db_connection->real_escape_string(strip_tags($_POST['user_lname'], ENT_QUOTES));
-					$sql = "UPDATE  users"
+					$user_mobile = (int) $_POST['user_mobile'];
+					$sql = "UPDATE  users 
+							SET user_email='" . $user_email . "', user_fname='" . $user_fname . "', user_lname='" . $user_lname . "' 
+							WHERE user_name = '" . $_SESSION['user_name']. "';";
+
+					$result_from_update = $this->db_connection->query($sql);
+						if($result_from_update) {
+							$this->messages[] = "Success!";
+						}
+						else 
+							$this->errors[] = "Something Went wrong";
 				}
 		}
 	}
-}
+//}

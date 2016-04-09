@@ -62,6 +62,7 @@ class AbstractProductClass {
    		if($return_product_data && $return_product_data->num_rows ==1 ) {
 
   			$obj_result = $return_product_data->fetch_object();
+  			
   			$this->product_id = $obj_result->product_id;
   			$this->product_name = $obj_result->product_name;
   			$this->product_title = $obj_result->product_title;
