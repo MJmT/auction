@@ -32,6 +32,10 @@
      <br>
  	<textarea id="product_description" rows="4" cols="50" name="product_description"> fg</textarea>
  	<br><br>
+ 	<label for="product_category">Category</label>
+     <br>
+    <input id="product_category" class="product_input" type="text" pattern="[a-zA-Z0-9_-]{3,}" name="product_category" style="width:200px" required />
+    <br><br>
  	 <label for="product_price">Product Price</label>
  	 <br>
  	  <input id="product_price" class="product_input" type="text"  name="product_price" required />

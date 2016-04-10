@@ -12,6 +12,7 @@ class AbstractProductClass {
 	protected $product_title;
 	protected $product_description;
 	protected $product_price;
+	protected $product_category;
 
 	//Setter method, sets $this->attribute = $datavalue obtained from database;
 
@@ -49,6 +50,9 @@ class AbstractProductClass {
 		return $this->product_id;
 	}
 
+	public function GetProductCategory() {
+		return $this->product_category;
+	}
   	public function __construct() {
   		session_start() ;
   	}
@@ -97,4 +101,68 @@ class AbstractProductClass {
         else
         	return false;
     }
+
+    protected function ProductNameCheck() {
+    		if(empty($this->product_name)) 
+            	$this->errors[] = "Empty Product Name"; 
+             else if (strlen($this->product_name) > 64 || strlen($this->product_name) < 2) 
+            	$this->errors[] = "Product name cannot be shorter than 2 or longer than 64 characters";
+    		else if(!preg_match('/^[a-zA-Z_\-\d]{2,64}$/i',($this->product_name))) 
+    			$this->errors[] = "Invalid characters in the product name field.";
+    		else return true;  
+}
+	protected function ProductTitleCheck() {
+		if(empty($this->product_title)) 
+			$this->errors[] = "Empty Product title";
+		if (strlen($this->product_title) > 100 || strlen($this->product_title) < 10) 
+            	$this->errors[] = "Product title cannot be shorter than 10 or longer than 100 characters";
+        else return true;
+    }
+
+    protected function ProductDescriptionCheck() {
+    	if(empty($this->product_description)) 
+			$this->errors[] = "Empty Product description";
+		else return true;
+	}
+
+	protected function ProductPriceCheck() {
+		if(empty($this->product_price)) 
+			$this->errors[] = "Empty Product Price";
+		else if (!preg_match('/^[0-9]{2,10}$/i', $this->product_price))  
+        			$this->errors[] = "Price has to be an integer value.";
+        else return true;
+	}
+
+	protected function ProductImageCheck() {
+		if(empty($_FILES['product_image']['name']) || empty($this->product_image))
+			$this->errorsp[] = "Please upload an image for the product";
+	/*	else if(!preg_match('/^image\/p?jpeg$/i', $_FILES['product_image']['type']) OR  
+				!preg_match('/^image\/gif$/i', $_FILES['product_image']['type']) OR
+				!preg_match('/^image\/png$/i', $_FILES['product_image']['type'])) 
+        			$this->errors[] = "Invalid File type. PNG/JPG/GIF are only supported.";*/
+
+		else return true;
+	}
+
+	protected function ProductCategoryCheck() {
+		if(empty($this->product_category))
+			$this->errors[] = "Empty category field";
+		else if(!preg_match('/^[a-zA-Z_\-\d]{3,64}$/i',($this->product_category))) 
+    			$this->errors[] = "Invalid characters in the product category field.";
+    	else if ($this->isCategoryValid()==true)
+    		return true;
+	}
+
+	protected function isCategoryValid() {
+		if($this->SetupDbConnection()==true) {
+				$product_category = $this->db_connection->real_escape_string(strip_tags($this->product_category, ENT_QUOTES));
+				$sql = "SELECT * 
+						FROM categories WHERE category_name = '" . $product_category . "';"; 
+				$result = $this->db_connection->query($sql);
+				if($result && $result->num_rows==1) 
+						return true;
+				else 
+					$this->errors[] = "Category is invalid";
+		}
+	}
 }

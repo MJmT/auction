@@ -13,19 +13,18 @@ if (isset($user)) {
         }
     }
 }
-
 ?>
+>
 <!-- register form -->
-<form method="post" action="setup_profile" name="registerform">
+<form method="post" action="setup_profile" name="addressform">
 
-    <!-- the user name input field uses a HTML5 pattern check -->
-    Hey <?php echo $_SESSION['user_name'] ?>, please take a moment to verify and complete your profile data.
+    Congrats! You are nearly done. Fill out your Address book for a secure shipping experience.
    <fieldset>
-   <label for="input_username">Username : </label><?php echo $_SESSION['user_name'];?>
-    <!-- the email input field uses a HTML5 email type check -->
+<h4> Address Book </h4>
+  
     <br><br>
-    <label for="user_input_email">Email :</label>
-    <input id="user_input_email" class="user_input" type="email" name="user_email" value="<?php echo $_SESSION['user_email'];?>" required />
+    <label for="address1">Email :</label>
+    <input id="address1" class="user_input" type="email" name="user_email" value="<?php echo $_SESSION['user_email'];?>" required />
     <br><br>
     <label for="user_input_fname">First Name: </label>
     <input id="user_input_fname" class="user_input" type="text" name="user_fname"   placeholder= "First Name"  required />
@@ -34,6 +33,6 @@ if (isset($user)) {
     <input id="user_input_lname" class="user_input" type="text" name="user_lname"  placeholder= "Last Name"  required />
      <label for="user_input_mobile">Mobile Number: </label>
      <input id="user_input_mobile" class="user_input" type="text" name="user_mobile" pattern="[0-9]*" placeholder= "10 digit mobile number"  required />
-    <input type="submit"  name="setup" value="Next" />
+    <input type="submit"  name="setup2" value="Next" />
 </fieldset>
 </form>

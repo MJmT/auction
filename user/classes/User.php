@@ -46,12 +46,15 @@ class User extends AbstractLoginClass {
 						$user_lname = $this->db_connection->real_escape_string(strip_tags($_POST['user_lname'], ENT_QUOTES));
 						$user_mobile = (int) $_POST['user_mobile'];
 						$sql = "UPDATE  users 
-								SET user_email='" . $user_email . "', user_fname='" . $user_fname . "', user_lname='" . $user_lname . "' 
+								SET user_email='" . $user_email . "', user_fname='" . $user_fname . "', user_lname='" . $user_lname . "', user_mobile='" .$user_mobile. "' 
 								WHERE user_name = '" . $_SESSION['user_name']. "';";
 
 						$result_from_update = $this->db_connection->query($sql);
 						if($result_from_update) {
+
 							$this->messages[] = "Success!";
+							include('views/profile_setup2.php');
+							exit();
 						}
 						else 
 							$this->errors[] = "Failed to update the database";
@@ -61,8 +64,9 @@ class User extends AbstractLoginClass {
 				$this->errors[] = "The database connection failed";
 			
 		}
-		 else 
-		 	$this->errors[] = "An unknown erorr occured";
-
-	}
+		else {
+            if(empty($this->errors)) 
+                $this->errors[] = "An unknown error occurred.";
+        }
+    }
 }
