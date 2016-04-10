@@ -7,9 +7,4 @@ require_once("classes/Category.php");
 
 $category = new ProductCategory();
 
-if(isset($category)) {
-	if($category->errors) {
-		foreach( $category->errors as $error) 
-			echo $error;
-	}
-}
+include('views/category_page.php');
