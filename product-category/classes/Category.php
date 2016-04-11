@@ -32,8 +32,9 @@ class ProductCategory {
 	} 
 
 	private function DisplayCategoryPage() {
-			$this->ValidateRequest();
+			
 			if($this->setupDbConnection()==true) {
+				$this->ValidateRequest();
 				$sql = "SELECT * from CATEGORIES where category_name= '".$this->category_name ."';"; 
 				$return_category = $this->db_connection->query($sql);
 				if($return_category and $return_category->num_rows==1) {
@@ -55,7 +56,7 @@ class ProductCategory {
 	}
 	//Escape the quotes to prevent injection
 	private function ValidateRequest() {
-		if($this->setupDbConnection()==true)
+		
 			$this->category_name = $this->db_connection->real_escape_string(strip_tags($_GET['category'], ENT_QUOTES));
 	}
 

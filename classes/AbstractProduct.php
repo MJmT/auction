@@ -8,6 +8,7 @@ class AbstractProductClass {
     protected $product_image_name;
 	protected $product_image;
 	public $product_id;
+	public $product_code;
 	protected $product_name;
 	protected $product_title;
 	protected $product_description;
@@ -60,8 +61,10 @@ class AbstractProductClass {
  	//Retrieve the product details from the database 
   	protected function RetrieveProductdb() {
 
-  		if($this->setupDbConnection()==true)
-       { $sql = "SELECT products.*, product_images.product_image_name, product_images.product_image FROM products inner join product_images WHERE products.product_id_hash= '". $_GET['product_code'] . "' AND products.product_id= product_images.product_id;";
+  		if($this->setupDbConnection()==true) { 
+  			$this->ValidateRequest();
+  			
+  			$sql = "SELECT products.*, product_images.product_image_name, product_images.product_image FROM products inner join product_images WHERE products.product_id_hash= '". $this->product_code . "' AND products.product_id= product_images.product_id;";
    		$return_product_data= $this->db_connection->query($sql);
    		if($return_product_data && $return_product_data->num_rows ==1 ) {
 
@@ -75,8 +78,11 @@ class AbstractProductClass {
   			$this->product_image = $obj_result->product_image;
 
    			}
-   			else 
+   			else {
    				$this->errors[] = "The requested product doesn't exist!";
+   				include($_SERVER['DOCUMENT_ROOT'] . '/pro2/views/errors/404.php');
+					exit();
+   			}
 
 
 		}
@@ -164,5 +170,10 @@ class AbstractProductClass {
 				else 
 					$this->errors[] = "Category is invalid";
 		}
+	}
+
+	protected function ValidateRequest() {
+		
+			$this->product_code = $this->db_connection->real_escape_string(strip_tags($_GET['product_code'], ENT_QUOTES));
 	}
 }
