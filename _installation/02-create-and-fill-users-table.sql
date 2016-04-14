@@ -1,9 +1,9 @@
-CREATE TABLE IF NOT EXISTS `login`.`address` (
-  `address_id` int(11) IDENTITY(1,1) NOT NULL,
-  `user_id` int(11) NOT NULL,
-   `Address1` varchar(120) COLLATE utf8_unicode_ci NOT NULL,
-   `Address2` varchar(120) COLLATE utf8_unicode_ci,
-    `user_privilege` int(5) NOT NULL DEFAULT 0,
+CREATE TABLE IF NOT EXISTS `login`.`users` (
+  `user_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'auto incrementing user_id of each user, unique index',
+  `user_name` varchar(64) COLLATE utf8_unicode_ci NOT NULL COMMENT 'user''s name, unique',
+  `user_password_hash` varchar(255) COLLATE utf8_unicode_ci NOT NULL COMMENT 'user''s password in salted and hashed format',
+  `user_email` varchar(64) COLLATE utf8_unicode_ci NOT NULL COMMENT 'user''s email, unique',
+  `user_privilege` int(5) NOT NULL DEFAULT 0 COMMENT 'user privileges',
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `user_name` (`user_name`),
   UNIQUE KEY `user_email` (`user_email`)

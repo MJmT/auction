@@ -66,7 +66,37 @@ class AbstractLoginClass {
         else return true;
         
       }
+
+      protected function AddressCheck() {
+        if(empty($_POST['address1'])) 
+            $this->errors[] = "Please enter your address.";
+          else return true;
+
+      }
  
+    protected function CityCheck() {
+       if(empty($_POST['city']))
+          $this->errors[] = "The city field is empty.";
+        else return true;
+    }
+
+     protected function StateCheck() {
+       if(empty($_POST['state']))
+          $this->errors[] = "The STate field is empty.";
+        else return true;
+
+    }
+
+    protected function CountryCheck() {
+       if(empty($_POST['Country']))
+          $this->errors[] = "The country field is empty.";
+        elseif(!strcmp($_POST['country'],'India')==0)
+          $this->errors[] = "Sorry, we do not ship outside India at the moment";
+        else return true;
+
+    }
+    
+
     public function isUserLoggedIn()
     {
         if (isset($_SESSION['user_login_status']) AND $_SESSION['user_login_status'] == 1) {
