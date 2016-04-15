@@ -15,7 +15,9 @@ class AbstractLoginClass {
 
 	public function __construct() {
 		  // create/read session, absolutely necessary
-        session_start();
+      if (session_status() == PHP_SESSION_NONE) {
+          session_start();
+}
 
     }
 

@@ -55,7 +55,9 @@ class AbstractProductClass {
 		return $this->product_category;
 	}
   	public function __construct() {
-  		session_start() ;
+  		if (session_status() == PHP_SESSION_NONE) {
+    		session_start();
+}
   	}
 
  	//Retrieve the product details from the database 
