@@ -7,7 +7,7 @@ class AbstractProductClass {
 	/* product data use POST with ProductCreation and GET with ProductDisplay*/
     protected $product_image_name;
 	protected $product_image;
-	public $product_id;
+	protected $product_id;
 	public $product_code;
 	protected $product_name;
 	protected $product_title;
@@ -78,6 +78,7 @@ class AbstractProductClass {
   			$this->product_description= $obj_result->product_description;
   			$this->product_image_name = $obj_result->product_image_name;
   			$this->product_image = $obj_result->product_image;
+  			$this->product_price = $obj_result->product_price;
 
    			}
    			else {
