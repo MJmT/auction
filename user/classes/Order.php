@@ -5,3 +5,10 @@
 
  class Order extends AbstractShoppingClass {
 	public function __construct(ProductDisplay $product) {
+		AbstractShoppingClass::__construct($product);
+
+		if(isset($_POST['buynow'])) {
+			$this->BuyNow();
+		}
+	}
+}

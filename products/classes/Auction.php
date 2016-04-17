@@ -1,7 +1,7 @@
 <?php
  require_once($_SERVER['DOCUMENT_ROOT'] . '/pro2/classes/AbstractShopping.php');
 
-class Auction Extends AbstractShoppingClass {
+class Auction extends AbstractShoppingClass {
 	public function __construct(ProductDisplay $product) {
 		AbstractShoppingClass::__construct($product);
 		$this->ProductPageDisplay();
