@@ -36,9 +36,13 @@
      <br>
     <input id="product_category" class="product_input" type="text" pattern="[a-zA-Z0-9_-]{3,}" name="product_category" style="width:200px" required />
     <br><br>
- 	 <label for="product_price">Product Price</label>
+ 	 <label for="product_bid_price">Starting Bid</label>
  	 <br>
- 	  <input id="product_price" class="product_input" type="text"  name="product_price" required />
+ 	  <input id="product_bid_price" class="product_input" type="text"  name="product_bid_price" required />
+ 	  <br><br>
+ 	 <label for="product_max_price">Product Sale Price</label>
+ 	 <br>
+ 	  <input id="product_max_price" class="product_input" type="text"  name="product_max_price" required />
  	  <br>
  	  <input type="file" name="product_image">
 	 	

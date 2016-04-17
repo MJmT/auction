@@ -11,7 +11,8 @@
 						$this->product_name = $_POST['product_name'];
 						$this->product_title = $_POST['product_title'];
 						$this->product_description = $_POST['product_description'];
-						$this->product_price = $_POST['product_price'];
+						$this->product_bid_price = $_POST['product_bid_price'];
+            $this->product_max_price = $_POST['product_max_price'];
             $this->product_category = $_POST['product_category'];
 						$image_path= pathinfo($_FILES['product_image']['name']);
 						$this->product_image_name = $this->GenerateImageName() . '.' . $image_path['extension']; 
@@ -24,19 +25,20 @@
 		private function CreateNewProduct() {
 				$valid_product = false;
 				
-        if($this->ProductNameCheck() && $this->ProductTitleCheck() && $this-> ProductDescriptionCheck() && $this->ProductImageCheck()  && $this->ProductPriceCheck() && $this->ProductPriceCheck()  && $this->ProductCategoryCheck()) {
+        if($this->ProductNameCheck() && $this->ProductTitleCheck() && $this-> ProductDescriptionCheck() && $this->ProductImageCheck() && $this->ProductPriceCheck()  && $this->ProductCategoryCheck()) {
 			    
             if($this->SetupDbConnection() == true) {
 			   
          		    	$product_name = $this->db_connection->real_escape_string(strip_tags($this->product_name, ENT_QUOTES));
        			    	$product_title = $this->db_connection->real_escape_string(strip_tags($this->product_title, ENT_QUOTES));
        			    	$product_description=$this->db_connection->real_escape_string(strip_tags($this->product_description, ENT_QUOTES));
-       			    	$product_price = (int) $this->product_price;
+       			    	$product_bid_price = (int) $this->product_bid_price;
+                  $product_max_price = (int) $this->product_max_price;
        			    	$unique_id = $this->GenerateUniqueHash();
                   $product_category = $this->product_category;
 
-       			    	$sql = "INSERT INTO products (product_name,product_title,product_description,product_price, category_name, product_id_hash) 
-       			    			VALUES('" . $product_name . "', '" . $product_title . "', '" . $product_description . "', '". $product_price . "', '". $product_category ."','" . $unique_id. "');";
+       			    	$sql = "INSERT INTO products (product_name,product_title,product_description,product_bid_price,product_max_price, category_name, product_id_hash) 
+       			    			VALUES('" . $product_name . "', '" . $product_title . "', '" . $product_description . "', '". $product_bid_price . "', '". $product_max_price . "','" . $product_category ."','" . $unique_id. "');";
        			    	$query_new_product_insert = $this->db_connection->query($sql);
 
        			    		if($query_new_product_insert) {

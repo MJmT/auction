@@ -13,8 +13,8 @@
  	protected $previous_user;
  	
  	//flags
- 	public $auction_status;
- 	public $user_status;
+ 	public $auction_status=999;
+ 	public $user_bid_status=999;
  	public $user_bid;
  	public $user_highest_bidder;
 
@@ -49,64 +49,23 @@
 
  		date_default_timezone_set('Asia/Kolkata');
  		$this->product_id = $product->product_id;
- 		$this->product_price = $product->product_price;
+ 		$this->product_bid_price = $product->product_bid_price;
  		
- 		$this->ProductPageDisplay();
+ 		
 
- 		if(isset($_POST['bid'])) {
- 			$this->MakeBid();
-
- 		}
+ 	
+ 		
  	}
  	public function ValidUser() {
  		//Inject the User class and its funcions into this class
- 		if($_SESSION['user_login_status']==1)
+ 		if(isset($_SESSION['user_login_status']) && $_SESSION['user_login_status']==1)
  			return true;
  
  	}	
  	
 
-    private function MakeBid() {
-    		if(!$this->GetAuctionStatusDb()) { 
-    			
-    			$this->InitAuctionMembers();
-    		}
-
-    	//validate each aspect, ie the bid amount is valid, the user is logged in, and whether the auction time is valid
-    	if($this->ValidBid() && $this->ValidUser() && $this->validAuction()) {
-    		//If everything is good, then set the auction members to new values
-    		 $this->previous_bid = $this->current_bid;
-    		 $this->previous_user = $this->current_user;
-    		 $this->current_bid = $_POST['bid_amount'];
-    		 $this->current_user = $_SESSION['user_name'];
-    		 if($this->setupDbConnection()==true)  {
-    		 	//The case where the auction record is yet to be created
-    		 		
-    		 	if(!$this->auction_status) 
-	    		 	$sql = "INSERT INTO auctions(product_id,current_highest_bid,previous_highest_bid,current_bid_user,previous_bid_user)
-    			 		VALUES('" . $this->GetProductId() . "','". $this->GetCurrentHighestBid() . "','". $this->GetPreviousBid() . "','". $this->GetCurrentHighestUser() . "','". $this->GetPreviousUser(). "');";
-
-    		 	else 
-    		 		$sql = "UPDATE auctions
-    		 				SET current_highest_bid='" . $this->GetCurrentHighestBid() . "', current_bid_user='". $this->GetCurrentHighestUser(). "', previous_highest_bid='". $this->GetPreviousBid() . "', previous_bid_user='". $this->GetPreviousUser(). "'
-    		 				WHERE product_id='". $this->GetProductId() ."';";
-
-    		 	$query_auctions = $this->db_connection->query($sql);
-    		 	if($query_auctions) {
-    		 		$auction_not_started = false;
-    		 		if($this->InsertBidsDb())
-    		 			$this->messages[] = "Success! You could bid again to improve your chances!";
-    		 		//To update the bids table;
-    		 	}
-    		 	else 
-    		$this->errors[] = "Update to auctions table failed. Error code:". $this->db_connection->error . ".";
-    		 
-
-    		}
-    	}
-    }
-
-    private function  InsertBidsDb() {
+    
+    protected function  InsertBidsDb() {
     	$sql = "INSERT INTO bids(user_name,product_id,bid_amount) 
     			VALUES ('" . $_SESSION['user_name'] . "','" .$this->GetProductId() . "','" . $this->GetCurrentHighestBid() . "');";
     	$query_insert_bid = $this->db_connection->query($sql);
@@ -115,18 +74,16 @@
     	else 
     		$this->errors[] = "Insert to bids table failed. Error code:". $this->db_connection->error . ".";
     }
-
-
     
 
-    private function InitAuctionMembers() {
-    	$this->current_bid = $this->GetProductPrice();
+    protected function InitAuctionMembers() {
+    	$this->current_bid = $this->GetProductBidPrice();
     		$this->previous_bid = 0;
     		$this->current_user = null;
     		$this->previous_user = null;
     }
 
-	private function CheckBidAmount() {
+	protected function CheckBidAmount() {
 		if($_POST['bid_amount']<$this->GetCurrentHighestBid())
 			$this->messages[] = "You can't down bid. Your bid amount is lower than the current highest bid.Try again";
 		elseif($_POST['bid_amount']==$this->GetCurrentHighestBid())
@@ -143,7 +100,7 @@
 	}
     
 
-    private function ValidBid() {
+    protected function ValidBid() {
     	if(empty($_POST['bid_amount'])) 
 			$this->errors[] = "You cannot leave an empty bid";
 		else if (!preg_match('/^[0-9]{2,10}$/i', $_POST['bid_amount']))  
@@ -175,28 +132,8 @@
 
    		}
     }
-    private function ProductPageDisplay() {
-    	if($this->hasAuctionStarted()) {
-    		$this->auction_status = true;
-    		if(!$this->GetAuctionStatusDb())
-    			$this->InitAuctionMembers();
-    		else
-    			if($this->HasUserAlreadybid()) {
-    				$this->user_bid_status = true;
-    				if($this->isUserHighestBidder())
-    					$this->user_highest_bidder = true;
-
-    			}
-
-
-    	}
-    	else {
-    		$this->auction_status = false;
-    		$this->InitAuctionMembers();
-    	}
-    }
-
-    private function hasUseralreadybid() {
+    
+    protected function hasUseralreadybid() {
     	if($this->setupDbConnection()==true)  {
 
     	 	$sql = "SELECT * from bids where user_name='" . $_SESSION['user_name'] . "' ORDER BY bid_amount desc limit 1;";
@@ -213,7 +150,7 @@
    		}
 	}
 
-	private function isUserHighestBidder() {
+	protected function isUserHighestBidder() {
 		 if($this->setupDbConnection()==true)  {	
 			$sql = "SELECT current_bid_user from auctions where product_id='" . $this->GetProductId(). "';";
 
@@ -227,7 +164,7 @@
     	}
 	}
 
-    public function hasAuctionStarted() {
+    protected function hasAuctionStarted() {
     	 if($this->setupDbConnection()==true)  {
 
     	 	$sql = "SELECT product_auction_start,product_auction_end from products_metadata where product_id='" . $this->GetProductId() . "';";
@@ -248,6 +185,24 @@
    		}
    	}
 
+   	protected function hasAuctionEnded() {
+   		$sql = "SELECT product_auction_start,product_auction_end from products_metadata where product_id='" . $this->GetProductId() . "';";
+
+    	 	$query_check = $this->db_connection->query($sql);
+
+    	 	if($query_check && $query_check->num_rows ==1 && $this->auction_status==1) {
+    	 		$obj = $query_check->fetch_object();
+    	 		$obj = $query_check->fetch_object();
+    	 		$this->auction_start = $obj->product_auction_start;
+    	 		$this->auction_end = $obj->product_auction_end;
+    	 		$start = strtotime($this->auction_start);
+    			$end  = strtotime($this->auction_end);
+    	 		$current_time =strtotime(date('Y-m-d H:i:s'));
+    	 		if($current_time>$start && $current_time>$end)
+    	 			return true;
+
+  	 	}
+  	}
 
     protected function CheckDateRange() {
     	$start = strtotime($this->auction_start);
@@ -261,8 +216,16 @@
     		return true;
     	
     }
+    protected function GetAuctionStatus() {
+    	if($this->setupDbConnection()==true)  {
+    		$sql =  "SELECT * from auctions where product_id='" . $this->GetProductId() . "';";
+    		$query_check = $this->db_connection->query($sql);
+    		if($query_check && $query_check->num_rows ==1) 
+    			return true;
 
-    private function GetAuctionStatusDb() {
+   		}
+   	}
+    protected function GetAuctionStatusDb() {
         if($this->setupDbConnection()==true)  {
     		$sql =  "SELECT * from auctions where product_id='" . $this->GetProductId() . "';";
     		$query_check = $this->db_connection->query($sql);
@@ -280,4 +243,31 @@
  				return false;
  		}
  	}
- }
+//auction status  0 - not started
+// 1 - started
+// 2 - ended
+//user bid status 0 - not bid
+// 1 - has made a bid
+// 2 - highest bidder
+ 	protected function ProductPageDisplay() {
+       if($this->ValidUser() && !$this->hasAuctionStarted()) {
+       		$this->auction_status = 0;
+       		$this->InitAuctionMembers();
+       }
+       	else if($this->validUser() && $this->hasAuctionStarted()) {
+       		if(!$this->GetAuctionStatusDb())
+                $this->InitAuctionMembers(); //FirstBidder
+	       	$this->auction_status =1;
+	       if(!$this->hasUserAlreadyBid())
+       			$this->user_bid_status=0;
+       		else {
+       			$this->user_bid_status =1;
+       			if($this->isUserHighestBidder())
+       				$this->user_highest_bidder =true;
+       		}
+       	}
+     }
+}
+
+
+      

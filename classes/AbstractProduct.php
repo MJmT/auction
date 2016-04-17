@@ -12,7 +12,10 @@ class AbstractProductClass {
 	protected $product_name;
 	protected $product_title;
 	protected $product_description;
-	protected $product_price;
+
+	protected $product_bid_price;
+	protected $product_max_price;
+
 	protected $product_category;
 
 	//Setter method, sets $this->attribute = $datavalue obtained from database;
@@ -34,8 +37,12 @@ class AbstractProductClass {
 	}
 
 
-	public function GetProductPrice() {
-		return $this->product_price;
+	public function GetProductBidPrice() {
+		return $this->product_bid_price;
+	}
+
+	public function GetProductMaxPrice() {
+		return $this->product_max_price;
 	}
 
 	
@@ -78,7 +85,8 @@ class AbstractProductClass {
   			$this->product_description= $obj_result->product_description;
   			$this->product_image_name = $obj_result->product_image_name;
   			$this->product_image = $obj_result->product_image;
-  			$this->product_price = $obj_result->product_price;
+  			$this->product_bid_price = $obj_result->product_bid_price;
+  			$this->product_max_price = $obj_result->product_max_price;
 
    			}
    			else {
@@ -135,9 +143,9 @@ class AbstractProductClass {
 	}
 
 	protected function ProductPriceCheck() {
-		if(empty($this->product_price)) 
+		if(empty($this->product_bid_price) || empty($this->product_max_price)) 
 			$this->errors[] = "Empty Product Price";
-		else if (!preg_match('/^[0-9]{2,10}$/i', $this->product_price))  
+		else if (!preg_match('/^[0-9]{2,10}$/i', $this->product_bid_price) || !preg_match('/^[0-9]{2,10}$/i', $this->product_max_price))  
         			$this->errors[] = "Price has to be an integer value.";
         else return true;
 	}

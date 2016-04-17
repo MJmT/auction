@@ -4,9 +4,11 @@ CREATE TABLE IF NOT EXISTS `login`.`products_metadata` (
   `product_expiry` DATETIME,
   `product_auction_start` DATETIME,
   `product_auction_end` DATETIME,
-  
-  PRIMARY KEY (`product_id`)
-  
+   `auction_expired` int(4) DEFAULT 0, 
+  PRIMARY KEY (`product_id`),
+   FOREIGN KEY (`product_id`) REFERENCES products(`product_id`)
+ ON DELETE CASCADE
+ ON UPDATE CASCADE
   ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='product metadata';
 
 DELIMITER $$

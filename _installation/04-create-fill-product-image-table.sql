@@ -4,4 +4,6 @@ CREATE TABLE IF NOT EXISTS `login`.`product_images` (
 	 `product_image`  mediumblob NOT NULL COMMENT 'product image unique',
 	 PRIMARY KEY (`product_id`),
 	 FOREIGN KEY (`product_id`) REFERENCES products(`product_id`)
+	 ON DELETE CASCADE
+	 ON UPDATE CASCADE
 	 )ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='product data';

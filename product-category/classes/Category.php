@@ -86,8 +86,8 @@ class ProductCategory {
 					INNER JOIN product_images WHERE products.category_name='" . $this->category_name . "' AND products.product_id= product_images.product_id;";
 			$result_from_query = $this->db_connection->query($sql);
 			if($result_from_query) {
-				$product_list = $result_from_query->fetch_assoc();
-				return $product_list;
+				//$product_list = $result_from_query->fetch_assoc();
+				return $result_from_query;
 			}
 
 		}
