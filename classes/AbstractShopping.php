@@ -49,7 +49,7 @@
 
  		date_default_timezone_set('Asia/Kolkata');
  		$this->product_id = $product->product_id;
- 		$this->product_bid_price = $product->product_bid_price;
+ 		
  		
  		
 
@@ -266,6 +266,34 @@
        				$this->user_highest_bidder =true;
        		}
        	}
+     }
+
+     protected function SetOrderStatusDb() {
+     		if($this->setupDbConnection()==true)  {
+     			$sql = "UPDATE products_metadata 
+    					SET order_status='" . $this->order_status . "' 
+    					WHERE product_id='". $this->GetProductId() . "';";
+    			$query_update = $this->db_connection->query($sql);
+    			if($query_update) 
+    				return true;
+    			else 
+    				return false;
+
+     		}
+     }
+
+     protected function GetOrderStatusDb() {
+     		if($this->setupDbConnection()== true) {
+     			$sql = "SELECT order_status FROM products_metadata
+     					WHERE product_id = '". $this->GetProductId() ."';";
+     			$query = $this->db_connection->query($sql);
+     			if($query && $query->num_rows==1) {
+     				$obj = $query->fetch_object();
+     				$this->order_status = $obj->order_status;
+     				return true;
+     			}
+     			else return false;
+     		}
      }
 }
 

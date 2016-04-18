@@ -4,10 +4,11 @@
 
 require_once("classes/ProductDisplay.php");
 require_once("classes/Auction.php");
-require_once($_SERVER['DOCUMENT_ROOT'] . '/pro2/user/classes/User.php');
+
+require_once($_SERVER['DOCUMENT_ROOT'] . '/pro2/user/classes/Order.php');
 
 $product = new ProductDisplay();
-$user = new User();
+
 $auction = new Auction($product);
 /*if (isset($product)) {
     if ($product->errors) {
@@ -46,6 +47,7 @@ $auction = new Auction($product);
             echo $message;
         }
     }
+    
 
 echo "<h1>".$product->GetProductTitle()."</h1>";
 
@@ -70,6 +72,19 @@ if($auction->auction_status==1){
 
 }
 elseif($auction->auction_status==0) { 
+    $order = new Order($product);
+    if ($order->errors) {
+        foreach ($order->errors as $error) {
+            echo $error;
+        }
+    }
+    if ($order->messages) {
+        foreach ($order->messages as $message) {
+            echo $message;
+        }
+    }
+   echo $order->order_status;
+   echo $order->GetProductId();
     echo "Bididng will start soon! Can't Wait?  Buy this product at a higher price. ";
     echo "<p>Sale Price: " . $product->GetProductMaxPrice() . "</p>";
     include('/views/buynow.php');
