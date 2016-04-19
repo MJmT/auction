@@ -15,15 +15,22 @@
 
 
 	}
-	protected function BuyNow() {
 
-		if(!$this->GetProductStatus() && $this->order_status == 0) {
-			 //you have to set order_status 1 when auction starts
+	 //you have to set order_status 1 when auction starts
 		//2 when in auction ends
 		//3 when buynow order succeeds;
 		//4 when bid order succeeds;
 		//Insert into orders table
-		 	if($this->setupDbConnection()==true)  {
+	
+	protected function BuyNow() {
+
+		if($this->OrderStatus()==0) {
+			$this->order_status =3;
+			$this->SetOrderStatusDb();
+			$this->SetOrderDb();
+		}
+	}
+		 	/*if($this->setupDbConnection()==true)  {
 				$sql = "INSERT INTO orders(user_name,product_id) 
     				VALUES ('" . $_SESSION['user_name'] . "','" . $this->GetProductId() . "');";
     			$query_insert = $this->db_connection->query($sql);
@@ -39,13 +46,9 @@
     			}
     			
 
-    		}
+    		}*/
 
 
-		}
-	}
-
-	
 	
 	protected function GetProductStatus() {
 		if($this->setupDbConnection()==true)  {

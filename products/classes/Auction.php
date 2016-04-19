@@ -1,7 +1,9 @@
 <?php
  require_once($_SERVER['DOCUMENT_ROOT'] . '/pro2/classes/AbstractShopping.php');
 
+
 class Auction extends AbstractShoppingClass {
+    public $auction_message = array();
 	public function __construct(ProductDisplay $product) {
 		AbstractShoppingClass::__construct($product);
         $this->product_bid_price = $product->product_bid_price;
@@ -11,13 +13,21 @@ class Auction extends AbstractShoppingClass {
  		}
 
 
+
 	}
 
+
+
 	private function MakeBid() {
-    		if(!$this->GetAuctionStatusDb()) { 
-    			
+             $this->OrderStatus();
+             if($this->order_status!=1) {
+               header("Refresh:0");
+                exit();
+             }
+             
+    		if(!$this->GetAuctionStatusDb())       			
     			$this->InitAuctionMembers();
-    		}
+    		
 
     	//validate each aspect, ie the bid amount is valid, the user is logged in, and whether the auction time is valid
     	if($this->ValidBid() && $this->ValidUser() && $this->validAuction()) {

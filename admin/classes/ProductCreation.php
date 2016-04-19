@@ -70,11 +70,7 @@
        			}
        		
 
-  	private function GenerateUniqueHash() {
-       	$unique_id =md5(uniqid(rand(),TRUE));
-       	return $unique_id;
-      }
-      	
+  	
 
   	private function GenerateImageName() {
        	$unique_id1 = uniqid(rand());

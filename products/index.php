@@ -37,16 +37,7 @@ $auction = new Auction($product);
 ?>
 */
 
- if ($auction->errors) {
-        foreach ($auction->errors as $error) {
-            echo $error;
-        }
-    }
-    if ($auction->messages) {
-        foreach ($auction->messages as $message) {
-            echo $message;
-        }
-    }
+
     
 
 echo "<h1>".$product->GetProductTitle()."</h1>";
@@ -57,21 +48,42 @@ echo "<p>Bid Amount: ". $product->GetProductBidPrice() . "</p>";
 
 
 
-if($auction->auction_status==1){
+
+if($auction->order_status==1){
+
      echo "Current Highest Bid: " . $auction->GetCurrentHighestBid();
+     
     if($auction->user_bid_status == 0)
-        echo "<p> You've not made any bids.! Start Bidding!!</p>";
+        $auction->messages[]= "<p> You've not made any bids.! Start Bidding!!</p>";
        
-    elseif($auction->user_bid_status == 1 && !$auction->user_highest_bidder )
-        echo "<p> You've been outbid.! Bid bigger.";
-    elseif($auction->user_bid_status ==1 && $auction->user_highest_bidder)
-        echo "You are at the top! Refresh the page for updates.";
+    elseif($auction->user_bid_status == 1 && !$auction->user_highest_bidder ) {
+        
+      $auction->auction_message[]=  "<p> You've been outbid.! Bid bigger.";
+    }
+    elseif($auction->user_bid_status ==1 && $auction->user_highest_bidder) {
+
+        $auction->auction_message[]=  "You are at the top! Refresh the page for updates.";
+    }
   include('/views/bids.php');
  
    
+ if ((empty($auction->errors)) && (empty($auction->messages))) {
+        foreach ($auction->auction_message as $message)
+            echo $message;
+    }
+    else if ($auction->errors) {
+        foreach ($auction->errors as $error) {
+            echo $error;
+        }
+    }
+    if ($auction->messages) {
+        foreach ($auction->messages as $message) {
+            echo $message;
+        }
+    }
 
 }
-elseif($auction->auction_status==0) { 
+elseif($auction->order_status==0) { 
     $order = new Order($product);
     if ($order->errors) {
         foreach ($order->errors as $error) {
@@ -89,7 +101,19 @@ elseif($auction->auction_status==0) {
     echo "<p>Sale Price: " . $product->GetProductMaxPrice() . "</p>";
     include('/views/buynow.php');
 }
+
+elseif($auction->order_status ==2) {
+    if( $auction->user_highest_bidder) {
+        $order_code=$auction->GetOrderCode();
+        echo $order_code;
+      header("Location: http://localhost/orders/index.php?order_code=$order_code ");
+        exit();
+    }
+    else
+        echo "You just lost this auction!";
+}
     /*
+}
 if($auction->user_bid_status) {
     if($auction->user_highest_bidder)
         echo "Congrats. You are currently the highest bidder. Refresh the page to see updates!";

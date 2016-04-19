@@ -187,4 +187,10 @@ class AbstractProductClass {
 		
 			$this->product_code = $this->db_connection->real_escape_string(strip_tags($_GET['product_code'], ENT_QUOTES));
 	}
+
+	protected function GenerateUniqueHash() {
+       	$unique_id =md5(uniqid(rand(),TRUE));
+       	return $unique_id;
+      }
+      	
 }
