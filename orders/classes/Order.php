@@ -5,7 +5,7 @@
 
  class Order extends AbstractShoppingClass {
 	public $order_status;
-
+	private $order_code;
 	public function __construct(ProductDisplay $product) {
 		AbstractShoppingClass::__construct($product);
 
@@ -41,11 +41,27 @@
 	protected function RetrieveOrderDetails() {
 		if($this->setupDbConnection()==true) { 
   			$this->ValidateRequest();
+  			$sql = "SELECT product_id FROM orders WHERE order_id_hex ='". $order_code ."'";
+  			$query= $this->db_connection->query($sql);
+  			if($query && $query->num_rows==1) {
+  				$obj = $query->fetch_object();
+  				$this->product_id= $obj->product_id;
+  			}
+  			else {
+  				header("Location:http://" . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'] ."/error.php ");
+  				exit();
+
+  			}
+  			if(isset($this->product_id) {
   			$sql = "SELECT orders.order_id, orders.user_name,orders.price,orders.order_type, address.* ,products.product_name,products.product_title,products.product_description,products.category_name
   				FROM orders inner join products on orders.product_id=products.product_id
   				inner join address on orders.user_name=address.user_name
-  				Where product_id='". $this->GetProductId() . '"'
-	}
+  				Where product_id='". $this->GetProductId() . "';";
+  				$query = $this->db_connection->query($sql);
+  				if($query && $query->num_rows==1) {
+  					$this->order_details = $query;
+  				}
+		}
 
 	protected function ValidateRequest() {
 			$this->order_code = $this->db_connection->real_escape_string(strip_tags($_GET['order_code'], ENT_QUOTES));

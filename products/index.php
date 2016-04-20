@@ -5,7 +5,7 @@
 require_once("classes/ProductDisplay.php");
 require_once("classes/Auction.php");
 
-require_once($_SERVER['DOCUMENT_ROOT'] . '/pro2/user/classes/Order.php');
+require_once($_SERVER['DOCUMENT_ROOT'] . '/pro2/orders/classes/Order.php');
 
 $product = new ProductDisplay();
 
