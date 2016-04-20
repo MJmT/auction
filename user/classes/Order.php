@@ -13,6 +13,8 @@
 			$this->BuyNow();
 		}
 
+		if(isset($_GET['order_code']))
+			$this->OrderPageDisplay();
 
 	}
 
@@ -30,6 +32,41 @@
 			$this->SetOrderDb();
 		}
 	}
+	
+	protected function OrderPageDisplay() {
+		$this->RetrieveOrderDetails();
+
+	}	
+
+	protected function RetrieveOrderDetails() {
+		if($this->setupDbConnection()==true) { 
+  			$this->ValidateRequest();
+  			$sql = "SELECT orders.order_id, orders.user_name,orders.price,orders.order_type, address.* ,products.product_name,products.product_title,products.product_description,products.category_name
+  				FROM orders inner join products on orders.product_id=products.product_id
+  				inner join address on orders.user_name=address.user_name
+  				Where product_id='". $this->GetProductId() . '"'
+	}
+
+	protected function ValidateRequest() {
+			$this->order_code = $this->db_connection->real_escape_string(strip_tags($_GET['order_code'], ENT_QUOTES));
+	}
+} 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 		 	/*if($this->setupDbConnection()==true)  {
 				$sql = "INSERT INTO orders(user_name,product_id) 
     				VALUES ('" . $_SESSION['user_name'] . "','" . $this->GetProductId() . "');";
@@ -46,7 +83,7 @@
     			}
     			
 
-    		}*/
+    		}
 
 
 	
@@ -63,5 +100,4 @@
     		 $this->errors[]= "Get order failed";
     		}
 		}
-	}
-}
+	}*/
