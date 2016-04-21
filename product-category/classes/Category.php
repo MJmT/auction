@@ -9,6 +9,8 @@ class ProductCategory {
   	private $category_description;
   	private $category_parent_id;
   	private $product_list;
+  	private $category_list;
+
 
 
 	public function __construct() {
@@ -17,6 +19,13 @@ class ProductCategory {
 		if(isset($_GET['category'])) {
 			$this->DisplayCategoryPage();
 		}
+		else
+			$this->DisplayCategoryList();
+	}
+
+	public function GetCategoryList() {
+		return $this->category_list;
+		
 	}
 	public function GetProductList() {
 		return $this->product_list;
@@ -30,6 +39,17 @@ class ProductCategory {
 	public function GetCategoryParentId() {
 		return $this->category_parent_id;
 	} 
+
+	private function DisplayCategoryList() {
+		if($this->setupDbConnection()==true) {
+			$sql = "SELECT * from CATEGORIES where parent_id= 0;"; 
+			$return_category = $this->db_connection->query($sql);
+				if($return_category and $return_category->num_rows>=1) {
+					$this->category_list = $return_category;
+				}
+		}
+	}	
+
 
 	private function DisplayCategoryPage() {
 			

@@ -7,4 +7,10 @@ require_once("classes/Category.php");
 
 $category = new ProductCategory();
 
-include('views/category_page.php');
+if(isset($_GET['category']))
+	include('views/category_page.php');
+
+else 
+	include('views/category_list.php');
+
+?>

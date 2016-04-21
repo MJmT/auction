@@ -1,17 +1,46 @@
 <?php
 
- require_once("../config/db.php");
+
  require_once($_SERVER['DOCUMENT_ROOT'] . '/pro2/classes/AbstractShopping.php');
+
 
  class Order extends AbstractShoppingClass {
 	public $order_status;
-	private $order_code;
-	public function __construct(ProductDisplay $product) {
-		AbstractShoppingClass::__construct($product);
+	public $order_code;
+	private $order_details;
+	private $product_details;
+	private $address_details;
+	public $show_payment_page;
+
+	public $show_order_confirmation;
+	protected $product_id;
+
+	public function GetOrderDetails() {
+		return $this->order_details;
+	}
+	public function GetProductDetails() {
+		return $this->product_details;
+	}
+
+	public function GetAddressDetails() {
+		return $this->address_details;
+	}
+		
+	public function __construct() {
+		 
+		
+		if (session_status() == PHP_SESSION_NONE) {
+          session_start();
+}
 
 		if(isset($_POST['buynow'])) {
-			$this->BuyNow();
-		}
+            $this->product_id = $_POST['product_id'];
+            $this->BuyNow();
+        }
+ 		
+ 		if(isset($_POST['confirmnpay'])) {
+ 			$this->show_payment_page = true;
+ 		}
 
 		if(isset($_GET['order_code']))
 			$this->OrderPageDisplay();
@@ -24,16 +53,75 @@
 		//4 when bid order succeeds;
 		//Insert into orders table
 	
+
+	
 	protected function BuyNow() {
 
 		if($this->OrderStatus()==0) {
 			$this->order_status =3;
 			$this->SetOrderStatusDb();
-			$this->SetOrderDb();
+			if($this->SetOrderDb())
+				$this->show_order_confirmation=true;
 		}
 	}
+
+	 protected function GetCurrentHighestBiddb() {
+     	if($this->setupDbConnection()) {
+     		$sql = "SELECT current_highest_bid FROM auctions WHERE product_id='". $this->GetProductId() . "';";
+     		$query=$this->db_connection->query($sql);
+     		if($query) {
+     			$obj = $query->fetch_object();
+     			return $obj->current_highest_bid;
+     		}
+
+     	}
+     }
+
+     protected function GetProductMaxPricedb() {
+    	if($this->setupDbConnection()) {
+     		$sql = "SELECT product_max_price FROM products WHERE product_id='". $this->GetProductId() . "';";
+     		$query=$this->db_connection->query($sql);
+     		if($query) {
+     			$obj = $query->fetch_object();
+     			return $obj->product_max_price;
+     		}
+
+     	}
+     }
+
+	 protected function SetOrderDb() {
+     		$this->order_id_hex= $this->GenerateUniqueHash();
+     		
+     	if($this->GetOrderStatusDb()==2) { 
+     		$this->order_type = 0;
+     		$this->order_price = $this->GetCurrentHighestBiddb();
+     	}
+     	elseif($this->GetOrderStatusDb()==3) {
+     		$this->order_type =1;
+     		$this->order_price = $this->GetProductMaxPricedb();
+     	}
+   
+
+     	if($this->setupDbConnection() == true) {
+     		$sql = "INSERT INTO orders(order_id_hex,user_name,product_id,order_type,price) VALUES('". $this->order_id_hex . "','" . $_SESSION['user_name'] . "','" . $this->GetProductId() . "','" . $this->order_type . "','" . $this->order_price."');"; 
+     		$query_insert = $this->db_connection->query($sql);
+     		if($query_insert) {
+     			return true;
+
+     		}
+
+     		else{ 
+     			$this->errors[] = "error," . $this->db_connection->error;
+
+     		}
+
+
+		}
+    }
+
 	
 	protected function OrderPageDisplay() {
+
 		$this->RetrieveOrderDetails();
 
 	}	
@@ -41,29 +129,50 @@
 	protected function RetrieveOrderDetails() {
 		if($this->setupDbConnection()==true) { 
   			$this->ValidateRequest();
-  			$sql = "SELECT product_id FROM orders WHERE order_id_hex ='". $order_code ."'";
+  			
+  			$sql = "SELECT product_id FROM orders WHERE order_id_hex ='". $this->order_code ."';";
   			$query= $this->db_connection->query($sql);
   			if($query && $query->num_rows==1) {
   				$obj = $query->fetch_object();
   				$this->product_id= $obj->product_id;
   			}
   			else {
-  				header("Location:http://" . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'] ."/error.php ");
+  				
+  				header("Location:http://" . $_SERVER['SERVER_NAME'] . "/error.php");
   				exit();
 
   			}
-  			if(isset($this->product_id) {
-  			$sql = "SELECT orders.order_id, orders.user_name,orders.price,orders.order_type, address.* ,products.product_name,products.product_title,products.product_description,products.category_name
-  				FROM orders inner join products on orders.product_id=products.product_id
-  				inner join address on orders.user_name=address.user_name
-  				Where product_id='". $this->GetProductId() . "';";
-  				$query = $this->db_connection->query($sql);
-  				if($query && $query->num_rows==1) {
-  					$this->order_details = $query;
-  				}
+  			if(isset($this->product_id)) {
+  			$sql = "SELECT order_id, user_name,price, order_type From orders 
+  					where product_id='" .$this->GetProductId() . "';";
+
+  			$query_order = $this->db_connection->query($sql);
+  			if($query_order) {
+
+  				$this->order_details = $query_order;
+  			}
+  			$sql = "SELECT product_name, product_title,product_description,category_name From
+  					products where product_id='". $this->GetProductId() . "';";
+  			$query_product = $this->db_connection->query($sql);
+  			if($query_product) {
+
+  				$this->product_details = $query_product;
+  			}
+
+  			$sql = "SELECT * from address where user_name = '".$_SESSION['user_name'] . "';";
+
+  			$query_address = $this->db_connection->query($sql);
+  			if($query_address) {
+  				$this->adress_details = $query_address;
+  			}
+  			if(!isset($this->order_details) || !isset($this->product_details) )
+  				$this->errors[]= "Heello" . $this->db_connection->error;
+			}
 		}
+	}
 
 	protected function ValidateRequest() {
+			
 			$this->order_code = $this->db_connection->real_escape_string(strip_tags($_GET['order_code'], ENT_QUOTES));
 	}
 } 

@@ -9,6 +9,8 @@ require_once($_SERVER['DOCUMENT_ROOT'] . '/pro2/orders/classes/Order.php');
 
 $product = new ProductDisplay();
 
+echo $product->GetProductId();
+
 $auction = new Auction($product);
 /*if (isset($product)) {
     if ($product->errors) {
@@ -84,7 +86,7 @@ if($auction->order_status==1){
 
 }
 elseif($auction->order_status==0) { 
-    $order = new Order($product);
+    $order = new Order();
     if ($order->errors) {
         foreach ($order->errors as $error) {
             echo $error;
@@ -95,18 +97,24 @@ elseif($auction->order_status==0) {
             echo $message;
         }
     }
-   echo $order->order_status;
-   echo $order->GetProductId();
+   
+   
     echo "Bididng will start soon! Can't Wait?  Buy this product at a higher price. ";
-    echo "<p>Sale Price: " . $product->GetProductMaxPrice() . "</p>";
+    echo "<p>Sale Price: " . $auction->GetProductMaxPrice() . "</p>";
     include('/views/buynow.php');
+    if(isset($order->show_order_confirmation) && $order->show_order_confirmation ==true) {
+         $order_code=$order->GetOrderCode($product->GetProductId());
+        header("Location: http://localhost/pro2/orders/index.php?order_code=$order_code "); 
+    }
 }
+
+
 
 elseif($auction->order_status ==2) {
     if( $auction->user_highest_bidder) {
-        $order_code=$auction->GetOrderCode();
-        echo $order_code;
-      header("Location: http://localhost/orders/index.php?order_code=$order_code ");
+        $order_code=$order->GetOrderCode($product->GetProductId());
+       
+      header("Location: http://localhost/pro2/orders/index.php?order_code=$order_code ");
         exit();
     }
     else

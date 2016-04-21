@@ -6,7 +6,7 @@ class Auction extends AbstractShoppingClass {
     public $auction_message = array();
 	public function __construct(ProductDisplay $product) {
 		AbstractShoppingClass::__construct($product);
-        $this->product_bid_price = $product->product_bid_price;
+        
 		$this->ProductPageDisplay();
 		if(isset($_POST['bid'])) {
  			$this->MakeBid();

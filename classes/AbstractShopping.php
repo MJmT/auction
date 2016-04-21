@@ -25,7 +25,7 @@
  	protected $order_type;
 
  	
-
+  
  	public function GetAuctionStart() {
  		return $this->auction_start;
  	}
@@ -50,14 +50,17 @@
  	public function GetPreviousUser() {
  		return $this->previous_user;
  	}
+    public function GetOrderCodeid() {
+        return $order_id_hex;
+    }
+
 
  	public function __construct(ProductDisplay $product) {
 
  		date_default_timezone_set('Asia/Kolkata');
  		$this->product_id = $product->product_id;
- 		
- 		
- 		
+ 		$this->product_bid_price = $product->product_bid_price;
+        $this->product_max_price = $product->product_max_price;
 
  	
  		
@@ -306,39 +309,12 @@
      		}
      }
 
-     protected function SetOrderDb() {
-     		$this->order_id_hex= $this->GenerateUniqueHash();
-     		
-     	if($this->GetOrderStatusDb()==2) { 
-     		$this->order_type = 0;
-     		$this->order_price = $this->GetCurrentHighestBid();
-     	}
-     	elseif($this->GetOrderStatusDb()==3) {
-     		$this->order_type =1;
-     		$this->order_price = $this->GetProductMaxPrice();
-     	}
-
-     	if($this->setupDbConnection() == true) {
-     		$sql = "INSERT INTO orders(order_id_hex,user_name,product_id,order_type,price) VALUES('". $this->order_id_hex . "','" . $_SESSION['user_name'] . "','" . $this->GetProductId() . "','" . $this->order_type . "','" . $this->order_price."');"; 
-     		$query_insert = $this->db_connection->query($sql);
-     		if($query_insert) {
-     			return true;
-
-     		}
-
-     		else{ 
-     			$this->errors[] = "error," . $this->db_connection->error;
-
-     		}
-
-
-		}
-    }
-
-    public function GetOrderCode() {
+    
+    public function GetOrderCode($product_id) {
     	if($this->setupDbConnection() == true) {
+
     		$sql = "SELECT order_id_hex from  orders 
-    				WHERE product_id='". $this->GetProductId() . "';";
+    				WHERE product_id='". $product_id . "';";
     		$query= $this->db_connection->query($sql);
     		if($query&& $query->num_rows==1) {
     			$obj = $query->fetch_object();
