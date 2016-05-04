@@ -68,39 +68,47 @@ class User extends AbstractLoginClass {
 		}
 		else {
             if(empty($this->errors)) 
-                $this->errors[] = "An unknown error occurred.";
+                $this->errors[] = "An unknown error occurred." . $this->db_connection->error;
         }
     }
 
     private function SetupSecondStep() {
-    	if($this->AddressCheck() && $this->CityCheck() && $this->StateCheck() && $this->CountryCheck)  {
+    	if($this->AddressCheck() && $this->CityCheck() && $this->StateCheck() && $this->CountryCheck())  {
     		if($this->setupDbConnection()==true) {
+    			
     			$address1 = $this->db_connection->real_escape_string(strip_tags($_POST['address1'], ENT_QUOTES));
     			$address2 = $this->db_connection->real_escape_string(strip_tags($_POST['address2'], ENT_QUOTES));
     			$address3 = $this->db_connection->real_escape_string(strip_tags($_POST['address3'], ENT_QUOTES));
     			$city= $this->db_connection->real_escape_string(strip_tags($_POST['city'], ENT_QUOTES));
     			$state= $this->db_connection->real_escape_string(strip_tags($_POST['state'], ENT_QUOTES));
     			$country= $this->db_connection->real_escape_string(strip_tags($_POST['country'], ENT_QUOTES));
-    			$sql = "INSERT INTO address (user_id,address1,address2,address3,city,state,country) 
-    					VALUES('" . $_SESSION['user_id'] . "','" . $address1 . "','" . $address2 . "','" . $address3 . "','" . $city . "','" . $state . "','" . $country ."');";
+    			$sql = "INSERT INTO address (user_name,address1,address2,address3,city,state,country) 
+    					VALUES('" . $_SESSION['user_name'] . "','" . $address1 . "','" . $address2 . "','" . $address3 . "','" . $city . "','" . $state . "','" . $country ."');";
     				$result_from_insert = $this->db_connection->query($sql);
     				
     				if($result_from_insert) {
-
-							$this->messages[] = "Success!";
+    						
+    							$sql = "UPDATE  users 
+								SET user_profile_status=1 WHERE user_name = '" . $_SESSION['user_name']. "';";
+								$result_from_update = $this->db_connection->query($sql);
+								if($result_from_update) {
+									$this->messages[] = "Success!";
+									include('views/profile_setup3.php');
+									exit();
 							
-						}
+								}
+							}
 						else 
 							$this->errors[] = "Failed to update the database";
-				}
+					}
 			
 			else 
 				$this->errors[] = "The database connection failed";
 			
-		}
+			}
 		else {
             if(empty($this->errors)) 
-                $this->errors[] = "An unknown error occurred.";
+                $this->errors[] = "An unknown error occurred." . $this->db_connection->error;
         }
     }
 						

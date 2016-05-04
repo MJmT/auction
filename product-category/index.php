@@ -6,7 +6,8 @@ require_once("../config/db.php");
 require_once("classes/Category.php");
 
 $category = new ProductCategory();
-
+include_once($_SERVER['DOCUMENT_ROOT'] . '/pro2/layout/layout_header.php');
+include_once('views/category_template.php');
 if(isset($_GET['category']))
 	include('views/category_page.php');
 

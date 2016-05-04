@@ -1,6 +1,7 @@
 <?php
 // show potential errors / feedback (from user object)
-
+include_once($_SERVER['DOCUMENT_ROOT'] . '/pro2/layout/layout_header.php');
+ include_once($_SERVER['DOCUMENT_ROOT'] . '/pro2/user/views/profile_template.php');
 if (isset($user)) {
     if ($user->errors) {
         foreach ($user->errors as $error) {
@@ -14,29 +15,33 @@ if (isset($user)) {
     }
 }
 ?>
->
+<h2>Setup up your profile</h2>
+<p>  Congrats! You are nearly done. Fill out your Address book for a <strong>secure shipping</strong> experience.</p>
+</header>
+</div>
+<div class="6u"><div  class="sectionup">
 <!-- register form -->
 <form method="post" action="setup_profile" name="addressform">
 
-    Congrats! You are nearly done. Fill out your Address book for a secure shipping experience.
+   
    <fieldset>
 <h4> Address Book </h4>
   
-    <br><br>
+    
     <label for="address1">Address 1:</label>
     <input id="address1" class="user_input" type="text" name="address1" placeholder= "Address Line 1"  required />
-    <br><br>
+    
     <label for="address2">Address 2: </label>
     <input id="address2" class="user_input" type="text" name="address2"   placeholder= "Optional Address 2" />
-    <br><br>
+    
     <label for="address3">Address 3: </label>
     <input id="address3" class="user_input" type="text" name="address3"   placeholder= "Optional Address 3" />
-    <br><br>
+    
     <label for="city">City: </label>
     <input id="city" class="user_input" type="text" name="city"   placeholder= "City" required />
-     <br><br>
+     
     <label for="state">State: </label>
-    <select>
+    <select name="state">
 <option value='Andaman and Nicobar Islands'>Andaman and Nicobar Islands</option>
 <option value='Andhra Pradesh'>Andhra Pradesh</option>
 <option value='Arunachal Pradesh'>Arunachal Pradesh</option>

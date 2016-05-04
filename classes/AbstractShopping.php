@@ -177,7 +177,7 @@
     protected function orderStatus() {
     	 if($this->setupDbConnection()==true)  {
 
-    	 	$sql = "SELECT product_auction_start,product_auction_end from products_metadata where product_id='" . $this->GetProductId() . "';";
+    	 	$sql = "SELECT product_auction_start,product_auction_end from products_metadata where product_id='" . $this->GetProductId() . "' AND product_auction_start IS NOT NULL;";
 
     	 	$query_check = $this->db_connection->query($sql);
 
@@ -185,6 +185,7 @@
     	 		$obj = $query_check->fetch_object();
     	 		$this->auction_start = $obj->product_auction_start;
     	 		$this->auction_end = $obj->product_auction_end;
+                
     	 		$start = strtotime($this->auction_start);
     			$end  = strtotime($this->auction_end);
     	 		$current_time =strtotime(date('Y-m-d H:i:s'));
@@ -197,6 +198,8 @@
     			
     			$this->SetorderStatusDb();
     	 	}
+            else
+                $this->order_status =0;
 
    		}
    	}
@@ -294,7 +297,59 @@
      	}
      }
 
+     protected function SetOrderDb() {
+            $this->order_id_hex= $this->GenerateUniqueHash();
+            
+        if($this->GetOrderStatusDb()==2) { 
+            $this->order_type = 0;
+            $this->order_price = $this->GetCurrentHighestBiddb();
+        }
+        elseif($this->GetOrderStatusDb()==3) {
+            $this->order_type =1;
+            $this->order_price = $this->GetProductMaxPricedb();
+        }
    
+
+        if($this->setupDbConnection() == true) {
+            $sql = "INSERT INTO orders(order_id_hex,user_name,product_id,order_type,price) VALUES('". $this->order_id_hex . "','" . $_SESSION['user_name'] . "','" . $this->GetProductId() . "','" . $this->order_type . "','" . $this->order_price."');"; 
+            $query_insert = $this->db_connection->query($sql);
+            if($query_insert) {
+                return true;
+
+            }
+
+            else{ 
+                $this->errors[] = "error," . $this->db_connection->error;
+
+            }
+
+
+        }
+    }
+   
+   protected function GetCurrentHighestBiddb() {
+        if($this->setupDbConnection()) {
+            $sql = "SELECT current_highest_bid FROM auctions WHERE product_id='". $this->GetProductId() . "';";
+            $query=$this->db_connection->query($sql);
+            if($query) {
+                $obj = $query->fetch_object();
+                return $obj->current_highest_bid;
+            }
+
+        }
+     }
+
+     protected function GetProductMaxPricedb() {
+        if($this->setupDbConnection()) {
+            $sql = "SELECT product_max_price FROM products WHERE product_id='". $this->GetProductId() . "';";
+            $query=$this->db_connection->query($sql);
+            if($query) {
+                $obj = $query->fetch_object();
+                return $obj->product_max_price;
+            }
+
+        }
+     }
      protected function GetOrderStatusDb() {
      		if($this->setupDbConnection()== true) {
      			$sql = "SELECT order_status FROM products_metadata

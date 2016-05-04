@@ -1,30 +1,47 @@
+
 <?php
 // show potential errors / feedback (from login object)
+ 
 if (isset($login)) {
     if ($login->errors) {
         foreach ($login->errors as $error) {
-            echo $error;
+          echo "<div class=\"alert alert-danger\">" .$error . "</div>";
         }
     }
     if ($login->messages) {
         foreach ($login->messages as $message) {
-            echo $message;
+            echo "<div class=\"alert alert-success\">" .$message . "</div>";
+        }
+    }
+}
+
+
+// show potential errors / feedback (from registration object)
+if (isset($registration)) {
+    if ($registration->errors) {
+        foreach ($registration->errors as $error) {
+            echo "<div class=\"alert alert-danger\">" .$error . "</div>";
+        }
+    }
+    if ($registration->messages) {
+        foreach ($registration->messages as $message) {
+            echo "<div class=\"alert alert-success\">" .$message . "</div>";
         }
     }
 }
 ?>
 
-<!-- login form box -->
-<form method="post" action="index.php" name="loginform">
+<div id="banner">
+                                <div class="content">
+                                <h2 class="heading"><strong>Auctionaire</strong></h2>
+                                <div class="para"> Where the world comes to Auction! 
+                            </div></div><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br></div>
 
-    <label for="login_input_username">Username</label>
-    <input id="login_input_username" class="login_input" type="text" name="user_name" required />
+                    
 
-    <label for="login_input_password">Password</label>
-    <input id="login_input_password" class="login_input" type="password" name="user_password" autocomplete="off" required />
+<?php
+include('login.php');
+include('register.php');
 
-    <input type="submit"  name="login" value="Log in" />
 
-</form>
-
-<a href="register.php">Register new account</a>
+?>

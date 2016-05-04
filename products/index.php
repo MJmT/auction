@@ -8,8 +8,11 @@ require_once("classes/Auction.php");
 require_once($_SERVER['DOCUMENT_ROOT'] . '/pro2/orders/classes/Order.php');
 
 $product = new ProductDisplay();
+ include_once($_SERVER['DOCUMENT_ROOT'] . '/pro2/layout/layout_header.php');
 
-echo $product->GetProductId();
+
+$product_image = $product->GetProductImage();
+$product_image_name =  $product->GetProductImageName();
 
 $auction = new Auction($product);
 /*if (isset($product)) {
@@ -41,12 +44,22 @@ $auction = new Auction($product);
 
 
     
+include_once('views/product_template.php');
 
-echo "<h1>".$product->GetProductTitle()."</h1>";
+echo "<h2>".$product->GetProductTitle()."</h2>";
 
 
-echo "<p><font size= 5px>" . $product->GetProductdescription() . "</p></font>";
-echo "<p>Bid Amount: ". $product->GetProductBidPrice() . "</p>";
+echo "<p>" . $product->GetProductdescription() . "</p>";
+echo '</header></div></div>';
+echo '<div class="row">
+        <div class="6u 12u(mobile)">
+        <section>';
+
+echo '<div class="proimg"><img   src="data:image/png;base64,' . base64_encode($product_image) . '" /></div></section></div>';
+echo '<div class="6u"><section class="sectionleft"> <header class="major">';
+echo "<h2>Bid Amount: ". $product->GetProductBidPrice() . "</h2>";
+
+
 
 
 
@@ -71,36 +84,36 @@ if($auction->order_status==1){
    
  if ((empty($auction->errors)) && (empty($auction->messages))) {
         foreach ($auction->auction_message as $message)
-            echo $message;
+            echo "<div class=\"alert alert-information\">" .$message . "</div>";
     }
     else if ($auction->errors) {
         foreach ($auction->errors as $error) {
-            echo $error;
+            echo "<div class=\"alert alert-danger\">" .$error . "</div>";
         }
     }
     if ($auction->messages) {
         foreach ($auction->messages as $message) {
-            echo $message;
+           echo "<div class=\"alert alert-warning\">" .$message . "</div>";
         }
     }
 
 }
 elseif($auction->order_status==0) { 
-    $order = new Order();
+   $order= new Order();
     if ($order->errors) {
         foreach ($order->errors as $error) {
-            echo $error;
+            echo "<div class=\"alert alert-danger\">" .$error . "</div>";
         }
     }
     if ($order->messages) {
         foreach ($order->messages as $message) {
-            echo $message;
+            echo "<div class=\"alert alert-warning\">" .$message . "</div>";
         }
     }
    
    
-    echo "Bididng will start soon! Can't Wait?  Buy this product at a higher price. ";
-    echo "<p>Sale Price: " . $auction->GetProductMaxPrice() . "</p>";
+    echo "<p>Bididng will start soon! Can't Wait?  Buy this product at a higher price. </P>";
+    echo "<h3>Sale Price: " . $auction->GetProductMaxPrice() . "</h3>";
     include('/views/buynow.php');
     if(isset($order->show_order_confirmation) && $order->show_order_confirmation ==true) {
          $order_code=$order->GetOrderCode($product->GetProductId());

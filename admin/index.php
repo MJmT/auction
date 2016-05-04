@@ -7,6 +7,7 @@ require_once("classes/Admin.php");
 
 	#Create a new admin instance
 	$admin = new Admin();
+	 include_once($_SERVER['DOCUMENT_ROOT'] . '/pro2/layout/layout_header.php');
 	#If the current session doesn't have the administrator privilge(100), then redirect to the error page
 	if($admin->isUserAdmin()==false) {
 		header("Location: ../error.php");

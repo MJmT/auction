@@ -84,13 +84,13 @@ class AbstractLoginClass {
 
      protected function StateCheck() {
        if(empty($_POST['state']))
-          $this->errors[] = "The STate field is empty.";
+          $this->errors[] = "The State field is empty.";
         else return true;
 
     }
 
     protected function CountryCheck() {
-       if(empty($_POST['Country']))
+       if(empty($_POST['country']))
           $this->errors[] = "The country field is empty.";
         elseif(!strcmp($_POST['country'],'India')==0)
           $this->errors[] = "Sorry, we do not ship outside India at the moment";

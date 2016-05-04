@@ -37,6 +37,10 @@
             $this->product_id = $_POST['product_id'];
             $this->BuyNow();
         }
+      if(isset($_POST['paypal'])) {
+            $this->product_id = $_POST['product_id'];
+            $this->SetPaymentVerified();
+        }
  		
  		if(isset($_POST['confirmnpay'])) {
  			$this->show_payment_page = true;
@@ -54,7 +58,9 @@
 		//Insert into orders table
 	
 
-	
+	protected function PaymentVerified() {
+    
+  }
 	protected function BuyNow() {
 
 		if($this->OrderStatus()==0) {
@@ -65,29 +71,7 @@
 		}
 	}
 
-	 protected function GetCurrentHighestBiddb() {
-     	if($this->setupDbConnection()) {
-     		$sql = "SELECT current_highest_bid FROM auctions WHERE product_id='". $this->GetProductId() . "';";
-     		$query=$this->db_connection->query($sql);
-     		if($query) {
-     			$obj = $query->fetch_object();
-     			return $obj->current_highest_bid;
-     		}
-
-     	}
-     }
-
-     protected function GetProductMaxPricedb() {
-    	if($this->setupDbConnection()) {
-     		$sql = "SELECT product_max_price FROM products WHERE product_id='". $this->GetProductId() . "';";
-     		$query=$this->db_connection->query($sql);
-     		if($query) {
-     			$obj = $query->fetch_object();
-     			return $obj->product_max_price;
-     		}
-
-     	}
-     }
+	 
 
 	 protected function SetOrderDb() {
      		$this->order_id_hex= $this->GenerateUniqueHash();
@@ -163,7 +147,7 @@
 
   			$query_address = $this->db_connection->query($sql);
   			if($query_address) {
-  				$this->adress_details = $query_address;
+  				$this->address_details = $query_address;
   			}
   			if(!isset($this->order_details) || !isset($this->product_details) )
   				$this->errors[]= "Heello" . $this->db_connection->error;
